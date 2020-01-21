@@ -1,0 +1,5 @@
+results/*
+data/*.gz
+data/*.sh
+__pycache__/*
+toy_data/*
