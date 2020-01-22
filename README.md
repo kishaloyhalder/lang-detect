@@ -1,6 +1,6 @@
 # Language Detection Assignment
 
-This is a project to detect language from given textual documents. The repository provides sources in python to achieve that. It has multiple functionalities. It can be used off-the-shelf with the pre-trained model. You can also train it on other datasets if you wish. On a dataset consisting of text samples from 21 different languages harvested from Wikipedia, the pre-trained model achieves a score of 94.55% on test dataset with unseen samples.
+This is a project to detect language from textual documents. The repository provides sources in python to achieve that. It has multiple functionalities. It can be used off-the-shelf with the pre-trained model. You can also train it on other datasets if you wish. On a dataset consisting of text samples from 21 different languages harvested from Wikipedia, the pre-trained model achieves a score of 94.55% on test dataset with unseen samples.
 
 In the current implementation, the model uses a sub-word based embedding mechanism which is very useful for handling out-of-vocabulary words. After the tokenization, a Bidirectional LSTM is used to encode the sequence of tokens present in the input. Finally the prediction is made by a fully connected layer with `N` number of prediction heads, where `N` is the number of languages in the dataset.
 The model is trained with back-propagation using `categorical cross-entropy` loss.
@@ -26,14 +26,14 @@ We observe a few interesting patterns in the model behaviour. Since it is traine
   The datasets used for the pre-training is included in this dump. However if you wish to create a new dataset. Please follow the steps.
   1) Download the dump: Follow the instructions given here: https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-2735
   2) Placement of data file: Place the downloaded `.gz` files in `./data` directory.
-  3) Create a directory inside `./data` called `extracted`. Now run the file `extract_data.py`. It would generated 3 files namely, `21_train.tsv`, `21_test.tsv`, `21_val.tsv` if 21 languages are selected in the beginning of the script. By default, the script selects first 10K lines (if present) from each language, and keeps 80% in train, and rest in dev, test (10% in each). For this assignment, the long documents are broken (delimited by space) into sequences of 10 words and then each is treated as a sample. These values can be changed by modifying the `extract_data.py` file, near the beginning.
+  3) Run the file `extract_data.py`. It would generate 3 files namely, `21_train.tsv`, `21_test.tsv`, `21_val.tsv` if 21 languages are selected in the beginning of the script. By default, the script selects first 20K lines (if present) from each language, and keeps 80% in train, and rest in dev, test (10% in each). The long documents are broken (delimited by space) into sequences of 20 tokens and then each is treated as a sample. These values can be changed by modifying the `extract_data.py` file, near the beginning.
 
 
 ## Instructions to run
 
 * Required Data Files: 
   1) training/validation/test Files: The code expects to see these files depending on how
-  you want to use them. All of them has the identical format. They have two columns i.e., `text` and `language`, separated by tab (`\t`). Each row in these files is a pair of text sample and the ISO 639-1 code for the source language of the sample, separated by tab.
+  you want to use them. All of them have the identical format. They have two columns i.e., `text` and `language`, separated by tab (`\t`). Each row in these files is a pair of text sample and the ISO 639-1 code for the source language of the sample, separated by tab.
 
   2) Model Files: The code expects model files if you want to use the pre-trained models. It is recommended to use the pre-trained model as much as possible, otherwise the sub-word encoding takes long to populate from scratch.
     * `model_weights.h5`: A serialized pre-trained keras model file.
