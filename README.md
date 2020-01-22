@@ -1,4 +1,4 @@
-# Language Detection Assignment
+# Neural Language Detection
 
 This is a project to detect language from textual documents. The repository provides sources in python to achieve that. It has multiple functionalities. It can be used off-the-shelf with the pre-trained model. You can also train it on other datasets if you wish. On a dataset consisting of text samples from 21 different languages harvested from Wikipedia, the pre-trained model achieves a score of 94.55% on test dataset with unseen samples.
 
