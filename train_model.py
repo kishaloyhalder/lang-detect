@@ -2,12 +2,10 @@
    textual documents.
 """
 import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3,4"
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 import numpy
+import keras
 from keras.models import Sequential
-from keras.layers import Dense, LSTM
+from keras.layers import Dense, LSTM, Input, Lambda
 from keras.layers.wrappers import Bidirectional
 from keras.layers.embeddings import Embedding
 import keras.preprocessing as preprocessing
@@ -17,9 +15,10 @@ from keras.models import load_model
 import tensorflow_datasets as tfds
 
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
+import joblib
 from sklearn.metrics import confusion_matrix
-
+import tensorflow as tf
 import pandas as pd
 
 from utilities import Logger
@@ -49,14 +48,14 @@ def train(options):
 		tokenizer, label_encoder, model = load_cached_models()
 	else:
 		if options.vocab:
-			#create tokenizer from scratch	
-			tokenizer = tfds.features.text.SubwordTextEncoder.build_from_corpus((text for \
+			#create tokenizer from scratch
+			tokenizer = tfds.deprecated.text.SubwordTextEncoder.build_from_corpus((text for \
 				text in train_examples), target_vocab_size=options.topwords)
 			tokenizer.save_to_file(TOKENIZER_PATH)
 			logger.log('tokenizer saved to: '+TOKENIZER_PATH)
 
 			#create label encoder from scratch
-			label_encoder = OneHotEncoder(handle_unknown="ignore")
+			label_encoder = OneHotEncoder(handle_unknown="ignore", sparse=False)
 			label_encoder.fit(train_labels.reshape(-1, 1))
 			joblib.dump(label_encoder, LABEL_ENCODER_PATH)
 			logger.log('label encoder saved to: '+LABEL_ENCODER_PATH)
@@ -70,7 +69,7 @@ def train(options):
 		model = Sequential()
 		model.add(Embedding(options.topwords, options.embedding, mask_zero=True))
 		model.add(Bidirectional(LSTM(options.size, dropout=0.2, recurrent_dropout=0.2)))
-		model.add(Dense(num_classes, activation='sigmoid'))
+		model.add(Dense(num_classes, activation='softmax'))
 		model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 		#print(model.summary())
 		stringlist = []
@@ -188,7 +187,8 @@ def process_history(history):
 
 def load_cached_models():
 	"""Loads pretrained models from the disk."""
-	tokenizer = tfds.features.text.SubwordTextEncoder.load_from_file(TOKENIZER_PATH)
+	#tokenizer = tfds.features.text.SubwordTextEncoder.load_from_file(TOKENIZER_PATH)
+	tokenizer = tfds.deprecated.text.SubwordTextEncoder.load_from_file(TOKENIZER_PATH)
 	logger.log('tokenizer loaded from: '+TOKENIZER_PATH)
 
 	label_encoder = joblib.load(LABEL_ENCODER_PATH)

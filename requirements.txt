@@ -1,0 +1,6 @@
+scikit-learn>=0.24.1
+numpy>=1.19.5
+tensorflow>=2.4.1
+keras>=2.4.3
+tqdm
+tensorflow-datasets>=4.2.0
